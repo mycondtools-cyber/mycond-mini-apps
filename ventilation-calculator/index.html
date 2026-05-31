@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Калькулятор вентиляції — Mycond</title>
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  :root {
+    --green: #3A7D3A; --green-light: #4FAF4E; --green-bg: #EAF4EA;
+    --blue: #4FC3F7; --text: #1A1A1A; --gray: #9E9E9E;
+    --radius: 14px; --shadow: 0 2px 12px rgba(0,0,0,0.08);
+  }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: var(--tg-theme-bg-color, #f0f4f0);
+    color: var(--tg-theme-text-color, var(--text));
+    min-height: 100vh; padding-bottom: 80px;
+  }
+  header {
+    background: var(--green); color: white;
+    padding: 16px 20px 20px; display: flex; align-items: center; gap: 12px;
+  }
+  .logo { width: 36px; height: 36px; background: var(--green-light); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 20px; }
+  header h1 { font-size: 17px; font-weight: 700; }
+  header p { font-size: 12px; opacity: 0.8; margin-top: 2px; }
+  .container { padding: 16px; max-width: 480px; margin: 0 auto; }
+  .card { background: white; border-radius: var(--radius); box-shadow: var(--shadow); margin-bottom: 12px; overflow: hidden; }
+  .card-title { padding: 14px 16px 10px; font-size: 13px; font-weight: 600; color: var(--green); text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 1px solid #f0f0f0; }
+  .field { padding: 12px 16px; border-bottom: 1px solid #f9f9f9; }
+  .field:last-child { border-bottom: none; }
+  .field label { font-size: 13px; color: var(--gray); display: block; margin-bottom: 6px; }
+  .field-row { display: flex; align-items: center; gap: 10px; }
+  input[type=number] { flex: 1; border: 1.5px solid #e0e0e0; border-radius: 10px; padding: 10px 14px; font-size: 15px; outline: none; transition: border-color .2s; background: #fafafa; }
+  input[type=number]:focus { border-color: var(--green); background: white; }
+  .unit { font-size: 13px; color: var(--gray); white-space: nowrap; min-width: 32px; }
+  .select-wrap { position: relative; }
+  select { width: 100%; border: 1.5px solid #e0e0e0; border-radius: 10px; padding: 10px 36px 10px 14px; font-size: 15px; outline: none; background: #fafafa; appearance: none; cursor: pointer; transition: border-color .2s; }
+  select:focus { border-color: var(--green); background: white; }
+  .select-wrap::after { content: '\25BE'; position: absolute; right: 14px; top: 50%; transform: translateY(-50%); color: var(--gray); pointer-events: none; font-size: 12px; }
+  .norm-chips { display: flex; gap: 8px; flex-wrap: wrap; padding-top: 4px; }
+  .chip { background: var(--green-bg); color: var(--green); border-radius: 20px; padding: 5px 12px; font-size: 12px; font-weight: 600; cursor: pointer; border: 1.5px solid transparent; transition: all .15s; }
+  .chip.active { background: var(--green); color: white; }
+  .result-card { background: linear-gradient(135deg, var(--green) 0%, #2a5e2a 100%); border-radius: var(--radius); padding: 20px; margin-bottom: 12px; box-shadow: 0 4px 20px rgba(42,94,42,0.3); display: none; }
+  .result-card.show { display: block; }
+  .result-row { display: flex; align-items: center; gap: 16px; margin-bottom: 12px; }
+  .result-icon { font-size: 28px; }
+  .result-val { font-size: 36px; font-weight: 900; color: white; line-height: 1; }
+  .result-unit { font-size: 14px; color: rgba(255,255,255,0.7); margin-top: 2px; }
+  .result-divider { height: 1px; background: rgba(255,255,255,0.15); margin: 12px 0; }
+  .result-meta { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .meta-item { background: rgba(255,255,255,0.12); border-radius: 10px; padding: 10px 12px; }
+  .meta-val { font-size: 18px; font-weight: 700; color: white; }
+  .meta-label { font-size: 11px; color: rgba(255,255,255,0.7); margin-top: 2px; }
+  .tip-card { background: #e8f5e9; border-left: 3px solid var(--green-light); border-radius: 10px; padding: 12px 14px; margin-bottom: 12px; font-size: 13px; color: #2d5a2d; display: none; }
+  .tip-card.show { display: block; }
+  .tip-title { font-weight: 600; margin-bottom: 4px; }
+  .btn-calc { width: 100%; background: var(--green); color: white; border: none; border-radius: var(--radius); padding: 15px; font-size: 16px; font-weight: 700; cursor: pointer; transition: background .15s; margin-top: 4px; }
+  .btn-calc:active { background: #2a5e2a; }
+  .rooms-table { width: 100%; border-collapse: collapse; }
+  .rooms-table tr { border-bottom: 1px solid #f0f0f0; }
+  .rooms-table tr:last-child { border-bottom: none; }
+  .rooms-table td { padding: 8px 16px; font-size: 13px; }
+  .rooms-table td:first-child { color: #555; }
+  .rooms-table td:last-child { text-align: right; font-weight: 600; color: var(--green); }
+  .norm-badge { display: inline-block; background: var(--green-bg); color: var(--green); border-radius: 6px; padding: 2px 7px; font-size: 11px; font-weight: 600; }
+</style>
+</head>
+<body>
+<header>
+  <div class="logo">&#x1F32C;</div>
+  <div>
+    <h1>Калькулятор вентиляції</h1>
+    <p>Розрахунок витрати повітря &bull; ДБН В.2.5-67</p>
+  </div>
+</header>
+<div class="container">
+  <div class="result-card" id="result">
+    <div class="result-row">
+      <div class="result-icon">&#x1F4A8;</div>
+      <div>
+        <div class="result-val" id="res-flow">0</div>
+        <div class="result-unit">м³/год — витрата повітря</div>
+      </div>
+    </div>
+    <div class="result-divider"></div>
+    <div class="result-meta">
+      <div class="meta-item"><div class="meta-val" id="res-ach">—</div><div class="meta-label">кратність обміну</div></div>
+      <div class="meta-item"><div class="meta-val" id="res-person">—</div><div class="meta-label">м³/год на особу</div></div>
+      <div class="meta-item"><div class="meta-val" id="res-diam">—</div><div class="meta-label">переріз канала</div></div>
+      <div class="meta-item"><div class="meta-val" id="res-pvu">—</div><div class="meta-label">рекомендована ПВУ</div></div>
+    </div>
+  </div>
+  <div class="tip-card" id="tip"><div class="tip-title" id="tip-title"></div><div id="tip-text"></div></div>
+  <div class="card">
+    <div class="card-title">Тип приміщення</div>
+    <div class="field">
+      <div class="select-wrap">
+        <select id="room-type">
+          <option value="living">Житлова кімната / вітальня</option>
+          <option value="bedroom">Спальня</option>
+          <option value="office">Офіс / кабінет</option>
+          <option value="conference">Переговорна кімната</option>
+          <option value="kitchen">Кухня</option>
+          <option value="bathroom">Санвузол / ванна</option>
+          <option value="gym">Спортзал / фітнес</option>
+          <option value="school">Клас / аудиторія</option>
+          <option value="restaurant">Ресторан / кафе</option>
+        </select>
+      </div>
+    </div>
+    <div class="field">
+      <label>Норма подачі повітря</label>
+      <div class="norm-chips">
+        <div class="chip active" id="chip-min" onclick="selectNorm('min')">Мінімум</div>
+        <div class="chip" id="chip-rec" onclick="selectNorm('rec')">Рекомендовано</div>
+        <div class="chip" id="chip-max" onclick="selectNorm('max')">Комфорт</div>
+      </div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-title">Параметри приміщення</div>
+    <div class="field">
+      <label>Площа приміщення</label>
+      <div class="field-row"><input type="number" id="area" value="40" min="5" max="2000"><span class="unit">м²</span></div>
+    </div>
+    <div class="field">
+      <label>Висота стелі</label>
+      <div class="field-row"><input type="number" id="height" value="2.7" min="2" max="6" step="0.1"><span class="unit">м</span></div>
+    </div>
+    <div class="field">
+      <label>Кількість людей</label>
+      <div class="field-row"><input type="number" id="people" value="3" min="1" max="500"><span class="unit">ос.</span></div>
+    </div>
+  </div>
+  <button class="btn-calc" onclick="calculate()">Розрахувати &rarr;</button>
+  <div class="card" style="margin-top:12px">
+    <div class="card-title">Норми <span class="norm-badge">ДБН В.2.5-67</span></div>
+    <table class="rooms-table">
+      <tr><td>Спальня</td><td>30–40 м³/год/ос</td></tr>
+      <tr><td>Житлова кімната</td><td>20–30 м³/год/ос</td></tr>
+      <tr><td>Офіс</td><td>40–60 м³/год/ос</td></tr>
+      <tr><td>Кухня</td><td>60–90 м³/год</td></tr>
+      <tr><td>Санвузол</td><td>25–50 м³/год</td></tr>
+      <tr><td>Спортзал</td><td>80–100 м³/год/ос</td></tr>
+    </table>
+  </div>
+</div>
+<script>
+if(window.Telegram&&Telegram.WebApp){Telegram.WebApp.ready();Telegram.WebApp.expand();}
+var NORMS={living:{min:20,rec:25,max:30,ach:[0.5,0.75,1.0]},bedroom:{min:30,rec:35,max:40,ach:[0.5,0.7,1.0]},office:{min:40,rec:50,max:60,ach:[2,3,4]},conference:{min:40,rec:55,max:70,ach:[3,5,7]},kitchen:{min:60,rec:75,max:90,ach:[5,7,10],fixed:true},bathroom:{min:25,rec:35,max:50,ach:[5,7,10],fixed:true},gym:{min:80,rec:90,max:100,ach:[4,6,8]},school:{min:16,rec:20,max:30,ach:[2,3,4]},restaurant:{min:30,rec:50,max:70,ach:[4,6,8]}};
+var TIPS={living:{t:'Порада для вітальні',b:'Рекомендується ПВУ з рекуперацією. ККД рекуператора 70–85% знижує витрати на опалення взимку.'},bedroom:{t:'Спальня: якість сну',b:'Уночі людина виділяє CO₂ і вологу. Норма CO₂ — до 1000 ppm. ПВУ або бризер забезпечать якісний сон.'},office:{t:'Офіс: продуктивність',b:'При CO₂ > 1000 ppm продуктивність знижується до 50%. Вентиляція — інвестиція в ефективність команди.'},conference:{t:'Переговорна: пік навантаження',b:'Розраховуйте на повну заповненість. Система має забезпечувати пікову витрату.'},kitchen:{t:'Кухня: витяжка + приплив',b:'Газова плита → мінімум 90 м³/год. Потрібна компенсація припливом з сусідніх кімнат.'},bathroom:{t:'Санвузол: протитиск',b:'Завжди в зоні витяжки (негативний тиск). Вентилятор з датчиком вологості — оптимально.'},gym:{t:'Спортзал: висока активність',b:'При навантаженні виробляється вдвічі більше CO₂. Обов\'язкова примусова вентиляція з великою кратністю.'},school:{t:'Клас: норми для дітей',b:'ДБН: мінімум 16 м³/год на учня. Бризери або ПВУ вирішують проблему CO₂ у класах.'},restaurant:{t:'Ресторан: баланс запахів',b:'Кухня у витяжці, зал у подачі. Дисбаланс → запахи у залі. Потрібне балансування.'}};
+var PVUS=[{f:100,n:'WindMe 100'},{f:200,n:'WindMe 200'},{f:350,n:'BreezMe 350'},{f:550,n:'BreezMe 550'},{f:800,n:'BreezMe 800'},{f:1200,n:'BreezMe 1200'}];
+var selNorm='min';
+function selectNorm(n){selNorm=n;['min','rec','max'].forEach(function(x){document.getElementById('chip-'+x).classList.remove('active')});document.getElementById('chip-'+n).classList.add('active');}
+function getDiam(flow){var speed=3;var area=flow/3600/speed;var d=Math.sqrt(4*area/Math.PI)*1000;var std=[100,125,150,160,200,250,315];for(var i=0;i<std.length;i++)if(std[i]>=d)return std[i];return 400;}
+function getPVU(f){for(var i=0;i<PVUS.length;i++)if(PVUS[i].f>=f)return PVUS[i].n;return 'Індивід. підбір';}
+function calculate(){
+  var area=parseFloat(document.getElementById('area').value)||40;
+  var h=parseFloat(document.getElementById('height').value)||2.7;
+  var people=parseInt(document.getElementById('people').value)||3;
+  var rt=document.getElementById('room-type').value;
+  var norm=NORMS[rt];
+  var ni={min:0,rec:1,max:2}[selNorm];
+  var vol=area*h;
+  var ach=norm.ach[ni];
+  var flow;
+  if(norm.fixed){flow=vol*ach;}
+  else{flow=Math.max(norm[selNorm]*people,vol*ach);}
+  flow=Math.ceil(flow/10)*10;
+  document.getElementById('res-flow').textContent=flow;
+  document.getElementById('res-ach').textContent=(flow/vol).toFixed(1)+' 1/год';
+  document.getElementById('res-person').textContent=norm.fixed?'—':Math.round(flow/people);
+  document.getElementById('res-diam').textContent='Ø'+getDiam(flow)+' мм';
+  document.getElementById('res-pvu').textContent=getPVU(flow);
+  var r=document.getElementById('result');r.classList.add('show');r.scrollIntoView({behavior:'smooth',block:'nearest'});
+  var tip=TIPS[rt];
+  if(tip){document.getElementById('tip-title').textContent=tip.t;document.getElementById('tip-text').textContent=tip.b;document.getElementById('tip').classList.add('show');}
+  if(window.Telegram&&Telegram.WebApp&&Telegram.WebApp.HapticFeedback)Telegram.WebApp.HapticFeedback.impactOccurred('medium');
+}
+</script>
+</body>
+</html>
