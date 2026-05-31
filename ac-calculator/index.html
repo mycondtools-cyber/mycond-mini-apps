@@ -209,6 +209,15 @@
     return a ? a.dataset.val : null;
   }
 
+  let lastCalc = null;
+
+  if (tg && tg.MainButton) {
+    tg.MainButton.setText('💾 Зберегти розрахунок');
+    tg.MainButton.onClick(function() {
+      if (lastCalc) tg.sendData(JSON.stringify(lastCalc));
+    });
+  }
+
   function calculate() {
     const area = parseFloat(document.getElementById('area').value);
     if (!area || area < 5) { alert('Введіть площу приміщення'); return; }
@@ -269,17 +278,22 @@
     document.getElementById('tips-block').innerHTML =
       `<div class="tips-title">💡 Рекомендація</div>${tips.map(t=>'• '+t).join('<br>')}`;
 
+    lastCalc = { calc: 'ac', inputs: { area, height, windows, people, orientation, roomType, techLevel }, result: { kw: parseFloat(kw.toFixed(2)), btu, model } };
+
     document.getElementById('form-section').style.display = 'none';
     document.getElementById('result-section').className = 'result show';
     window.scrollTo(0, 0);
     if (tg) tg.HapticFeedback?.notificationOccurred('success');
+    if (tg && tg.MainButton) tg.MainButton.show();
   }
 
   function resetCalc() {
     document.getElementById('form-section').style.display = 'block';
     document.getElementById('result-section').className = 'result';
     window.scrollTo(0, 0);
+    if (tg && tg.MainButton) tg.MainButton.hide();
   }
 </script>
 </body>
 </html>
+
