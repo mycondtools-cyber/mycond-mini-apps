@@ -18,10 +18,7 @@
     color: var(--tg-theme-text-color, var(--text));
     min-height: 100vh; padding-bottom: 80px;
   }
-  header {
-    background: var(--green); color: white;
-    padding: 16px 20px 20px; display: flex; align-items: center; gap: 12px;
-  }
+  header { background: var(--green); color: white; padding: 16px 20px 20px; display: flex; align-items: center; gap: 12px; }
   .logo { width: 36px; height: 36px; background: var(--green-light); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 20px; }
   header h1 { font-size: 17px; font-weight: 700; }
   header p { font-size: 12px; opacity: 0.8; margin-top: 2px; }
@@ -58,6 +55,12 @@
   .tip-title { font-weight: 600; margin-bottom: 4px; }
   .btn-calc { width: 100%; background: var(--green); color: white; border: none; border-radius: var(--radius); padding: 15px; font-size: 16px; font-weight: 700; cursor: pointer; transition: background .15s; margin-top: 4px; }
   .btn-calc:active { background: #2a5e2a; }
+  .btn-offer { width: 100%; padding: 16px; background: linear-gradient(135deg, #4FAF4E 0%, #3A7D3A 100%); color: white; border: none; border-radius: var(--radius); font-size: 16px; font-weight: 700; cursor: pointer; margin-bottom: 10px; box-shadow: 0 4px 16px rgba(58,125,58,0.35); display: none; align-items: center; justify-content: center; gap: 8px; }
+  .btn-offer.show { display: flex; }
+  .btn-offer:active { opacity: 0.9; }
+  .btn-offer.sent { background: #78909C; box-shadow: none; pointer-events: none; }
+  .btn-offer-inner { text-align: left; }
+  .btn-offer-sub { font-size: 12px; opacity: 0.85; font-weight: 400; margin-top: 1px; }
   .rooms-table { width: 100%; border-collapse: collapse; }
   .rooms-table tr { border-bottom: 1px solid #f0f0f0; }
   .rooms-table tr:last-child { border-bottom: none; }
@@ -93,6 +96,15 @@
     </div>
   </div>
   <div class="tip-card" id="tip"><div class="tip-title" id="tip-title"></div><div id="tip-text"></div></div>
+
+  <button class="btn-offer" id="btn-offer" onclick="requestOffer()">
+    <span style="font-size:22px">📋</span>
+    <div class="btn-offer-inner">
+      <div>Отримати комерційну пропозицію</div>
+      <div class="btn-offer-sub">Менеджер зв'яжеться з вами</div>
+    </div>
+  </button>
+
   <div class="card">
     <div class="card-title">Тип приміщення</div>
     <div class="field">
@@ -148,12 +160,27 @@
   </div>
 </div>
 <script>
-if(window.Telegram&&Telegram.WebApp){Telegram.WebApp.ready();Telegram.WebApp.expand();}
-var lastCalc=null;
-if(window.Telegram&&Telegram.WebApp&&Telegram.WebApp.MainButton){
-  Telegram.WebApp.MainButton.setText('💾 Зберегти розрахунок');
-  Telegram.WebApp.MainButton.onClick(function(){if(lastCalc)Telegram.WebApp.sendData(JSON.stringify(lastCalc));});
+var API_URL = 'http://91.98.76.51:3001/api/report';
+var tg = window.Telegram && Telegram.WebApp ? Telegram.WebApp : null;
+if(tg){tg.ready();tg.expand();}
+
+function getTgUser() {
+  if (!tg || !tg.initDataUnsafe || !tg.initDataUnsafe.user) return { id: null, name: 'Анонім', username: null };
+  var u = tg.initDataUnsafe.user;
+  return { id: u.id, name: [u.first_name, u.last_name].filter(Boolean).join(' '), username: u.username || null };
 }
+
+function sendReport(data) {
+  try {
+    fetch(API_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data)
+    }).catch(function(){});
+  } catch(e) {}
+}
+
+var lastCalc=null;
 var NORMS={living:{min:20,rec:25,max:30,ach:[0.5,0.75,1.0]},bedroom:{min:30,rec:35,max:40,ach:[0.5,0.7,1.0]},office:{min:40,rec:50,max:60,ach:[2,3,4]},conference:{min:40,rec:55,max:70,ach:[3,5,7]},kitchen:{min:60,rec:75,max:90,ach:[5,7,10],fixed:true},bathroom:{min:25,rec:35,max:50,ach:[5,7,10],fixed:true},gym:{min:80,rec:90,max:100,ach:[4,6,8]},school:{min:16,rec:20,max:30,ach:[2,3,4]},restaurant:{min:30,rec:50,max:70,ach:[4,6,8]}};
 var TIPS={living:{t:'Порада для вітальні',b:'Рекомендується ПВУ з рекуперацією. ККД рекуператора 70–85% знижує витрати на опалення взимку.'},bedroom:{t:'Спальня: якість сну',b:'Уночі людина виділяє CO₂ і вологу. Норма CO₂ — до 1000 ppm. ПВУ або бризер забезпечать якісний сон.'},office:{t:'Офіс: продуктивність',b:'При CO₂ > 1000 ppm продуктивність знижується до 50%. Вентиляція — інвестиція в ефективність команди.'},conference:{t:'Переговорна: пік навантаження',b:'Розраховуйте на повну заповненість. Система має забезпечувати пікову витрату.'},kitchen:{t:'Кухня: витяжка + приплив',b:'Газова плита → мінімум 90 м³/год. Потрібна компенсація припливом з сусідніх кімнат.'},bathroom:{t:'Санвузол: протитиск',b:'Завжди в зоні витяжки (негативний тиск). Вентилятор з датчиком вологості — оптимально.'},gym:{t:'Спортзал: висока активність',b:'При навантаженні виробляється вдвічі більше CO₂. Обов\'язкова примусова вентиляція з великою кратністю.'},school:{t:'Клас: норми для дітей',b:'ДБН: мінімум 16 м³/год на учня. Бризери або ПВУ вирішують проблему CO₂ у класах.'},restaurant:{t:'Ресторан: баланс запахів',b:'Кухня у витяжці, зал у подачі. Дисбаланс → запахи у залі. Потрібне балансування.'}};
 var PVUS=[{f:100,n:'WindMe 100'},{f:200,n:'WindMe 200'},{f:350,n:'BreezMe 350'},{f:550,n:'BreezMe 550'},{f:800,n:'BreezMe 800'},{f:1200,n:'BreezMe 1200'}];
@@ -174,19 +201,34 @@ function calculate(){
   if(norm.fixed){flow=vol*ach;}
   else{flow=Math.max(norm[selNorm]*people,vol*ach);}
   flow=Math.ceil(flow/10)*10;
+  var pvu=getPVU(flow);
+  var diam='Ø'+getDiam(flow)+' мм';
   document.getElementById('res-flow').textContent=flow;
   document.getElementById('res-ach').textContent=(flow/vol).toFixed(1)+' 1/год';
   document.getElementById('res-person').textContent=norm.fixed?'—':Math.round(flow/people);
-  document.getElementById('res-diam').textContent='Ø'+getDiam(flow)+' мм';
-  document.getElementById('res-pvu').textContent=getPVU(flow);
+  document.getElementById('res-diam').textContent=diam;
+  document.getElementById('res-pvu').textContent=pvu;
   var r=document.getElementById('result');r.classList.add('show');r.scrollIntoView({behavior:'smooth',block:'nearest'});
   var tip=TIPS[rt];
   if(tip){document.getElementById('tip-title').textContent=tip.t;document.getElementById('tip-text').textContent=tip.b;document.getElementById('tip').classList.add('show');}
-  if(window.Telegram&&Telegram.WebApp&&Telegram.WebApp.HapticFeedback)Telegram.WebApp.HapticFeedback.impactOccurred('medium');
-  lastCalc={calc:'vent',inputs:{area:area,height:h,people:people,roomType:rt,norm:selNorm},result:{flow:flow,ach:parseFloat((flow/vol).toFixed(1)),diam:'Ø'+getDiam(flow)+' мм',pvu:getPVU(flow)}};
-  if(window.Telegram&&Telegram.WebApp&&Telegram.WebApp.MainButton)Telegram.WebApp.MainButton.show();
+  if(tg && tg.HapticFeedback)tg.HapticFeedback.impactOccurred('medium');
+  lastCalc={calc:'vent',inputs:{area:area,height:h,people:people,roomType:rt,norm:selNorm},result:{flow:flow,ach:parseFloat((flow/vol).toFixed(1)),diam:diam,pvu:pvu}};
+
+  sendReport({ type: 'calc', user: getTgUser(), calc: lastCalc.calc, inputs: lastCalc.inputs, result: lastCalc.result });
+
+  var btn=document.getElementById('btn-offer');
+  btn.classList.add('show');
+  btn.classList.remove('sent');
+  btn.innerHTML='<span style="font-size:22px">📋</span><div class="btn-offer-inner"><div>Отримати комерційну пропозицію</div><div class="btn-offer-sub">Менеджер зв\'яжеться з вами</div></div>';
+}
+function requestOffer(){
+  if(!lastCalc)return;
+  sendReport({ type: 'offer', user: getTgUser(), calc: lastCalc.calc, inputs: lastCalc.inputs, result: lastCalc.result });
+  var btn=document.getElementById('btn-offer');
+  btn.classList.add('sent');
+  btn.innerHTML='<span style="font-size:22px">✅</span><div class="btn-offer-inner"><div>Запит надіслано!</div><div class="btn-offer-sub">Менеджер зв\'яжеться з вами найближчим часом</div></div>';
+  if(tg && tg.HapticFeedback)tg.HapticFeedback.notificationOccurred('success');
 }
 </script>
 </body>
 </html>
-

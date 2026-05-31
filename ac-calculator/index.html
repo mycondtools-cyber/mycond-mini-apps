@@ -16,91 +16,51 @@
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     background: var(--tg-theme-bg-color, #f0f4f0);
     color: var(--tg-theme-text-color, var(--text));
-    min-height: 100vh;
+    min-height: 100vh; padding-bottom: 30px;
   }
-  header {
-    background: var(--green); color: white;
-    padding: 16px 20px 20px; display: flex; align-items: center; gap: 12px;
-  }
-  .logo {
-    width: 36px; height: 36px; background: var(--green-light);
-    border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 18px;
-  }
+  header { background: var(--green); color: white; padding: 16px 20px 20px; display: flex; align-items: center; gap: 12px; }
+  .logo { width: 36px; height: 36px; background: var(--green-light); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 18px; }
   header h1 { font-size: 17px; font-weight: 700; }
   header p { font-size: 12px; opacity: 0.8; margin-top: 2px; }
   .content { padding: 16px; }
-  .card {
-    background: var(--tg-theme-secondary-bg-color, white);
-    border-radius: var(--radius); padding: 18px; margin-bottom: 12px; box-shadow: var(--shadow);
-  }
-  .card-title {
-    font-size: 13px; font-weight: 600; color: var(--gray);
-    text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 14px;
-  }
+  .card { background: var(--tg-theme-secondary-bg-color, white); border-radius: var(--radius); padding: 18px; margin-bottom: 12px; box-shadow: var(--shadow); }
+  .card-title { font-size: 13px; font-weight: 600; color: var(--gray); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 14px; }
   .field { margin-bottom: 14px; }
   .field:last-child { margin-bottom: 0; }
   label { display: block; font-size: 14px; font-weight: 500; margin-bottom: 6px; }
   label .hint { font-weight: 400; color: var(--gray); font-size: 12px; }
-  input[type="number"] {
-    width: 100%; padding: 11px 14px; border: 1.5px solid #E0E0E0;
-    border-radius: 10px; font-size: 16px; color: var(--text);
-    background: var(--tg-theme-bg-color, white); outline: none; -webkit-appearance: none;
-  }
+  input[type="number"] { width: 100%; padding: 11px 14px; border: 1.5px solid #E0E0E0; border-radius: 10px; font-size: 16px; color: var(--text); background: var(--tg-theme-bg-color, white); outline: none; -webkit-appearance: none; }
   input[type="number"]:focus { border-color: var(--green-light); }
   .range-row { display: flex; align-items: center; gap: 12px; }
-  input[type="range"] {
-    flex: 1; -webkit-appearance: none; height: 4px;
-    border-radius: 2px; background: #E0E0E0; outline: none;
-  }
-  input[type="range"]::-webkit-slider-thumb {
-    -webkit-appearance: none; width: 22px; height: 22px;
-    border-radius: 50%; background: var(--green-light); cursor: pointer;
-  }
+  input[type="range"] { flex: 1; -webkit-appearance: none; height: 4px; border-radius: 2px; background: #E0E0E0; outline: none; }
+  input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; width: 22px; height: 22px; border-radius: 50%; background: var(--green-light); cursor: pointer; }
   .range-value { min-width: 36px; text-align: center; font-size: 16px; font-weight: 600; color: var(--green); }
   .seg-group { display: flex; gap: 6px; flex-wrap: wrap; }
-  .seg-btn {
-    flex: 1; min-width: 60px; padding: 9px 6px;
-    border: 1.5px solid #E0E0E0; border-radius: 10px;
-    background: var(--tg-theme-bg-color, white);
-    font-size: 13px; font-weight: 500; color: var(--gray); cursor: pointer; text-align: center;
-  }
+  .seg-btn { flex: 1; min-width: 60px; padding: 9px 6px; border: 1.5px solid #E0E0E0; border-radius: 10px; background: var(--tg-theme-bg-color, white); font-size: 13px; font-weight: 500; color: var(--gray); cursor: pointer; text-align: center; }
   .seg-btn.active { border-color: var(--green-light); background: var(--green-bg); color: var(--green); font-weight: 600; }
-  .calc-btn {
-    width: 100%; padding: 15px; background: var(--green); color: white;
-    border: none; border-radius: var(--radius); font-size: 16px; font-weight: 700;
-    cursor: pointer; margin-bottom: 12px;
-  }
+  .calc-btn { width: 100%; padding: 15px; background: var(--green); color: white; border: none; border-radius: var(--radius); font-size: 16px; font-weight: 700; cursor: pointer; margin-bottom: 12px; }
   .calc-btn:active { background: #2D6B2D; }
   .result { display: none; }
   .result.show { display: block; }
-  .result-card {
-    background: var(--green); color: white;
-    border-radius: var(--radius); padding: 20px; margin-bottom: 12px; text-align: center;
-  }
+  .result-card { background: var(--green); color: white; border-radius: var(--radius); padding: 20px; margin-bottom: 12px; text-align: center; }
   .result-kw { font-size: 48px; font-weight: 800; line-height: 1; }
   .result-kw span { font-size: 22px; font-weight: 400; opacity: 0.8; }
   .result-btu { font-size: 16px; opacity: 0.85; margin-top: 4px; }
   .result-model { margin-top: 14px; background: rgba(255,255,255,0.15); border-radius: 10px; padding: 10px 16px; font-size: 14px; }
   .result-model strong { font-size: 18px; display: block; margin-top: 2px; }
-  .breakdown {
-    background: var(--tg-theme-secondary-bg-color, white);
-    border-radius: var(--radius); padding: 16px; margin-bottom: 12px; box-shadow: var(--shadow);
-  }
+  .breakdown { background: var(--tg-theme-secondary-bg-color, white); border-radius: var(--radius); padding: 16px; margin-bottom: 12px; box-shadow: var(--shadow); }
   .breakdown-title { font-size: 13px; font-weight: 600; color: var(--gray); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 12px; }
   .breakdown-row { display: flex; justify-content: space-between; padding: 7px 0; border-bottom: 1px solid #F0F0F0; font-size: 14px; }
   .breakdown-row:last-child { border-bottom: none; }
   .breakdown-row .val { font-weight: 600; color: var(--green); }
-  .tips {
-    background: #FFF8E1; border-left: 3px solid var(--amber);
-    border-radius: 0 10px 10px 0; padding: 12px 14px;
-    font-size: 13px; line-height: 1.5; margin-bottom: 12px; color: #5C4000;
-  }
+  .tips { background: #FFF8E1; border-left: 3px solid var(--amber); border-radius: 0 10px 10px 0; padding: 12px 14px; font-size: 13px; line-height: 1.5; margin-bottom: 16px; color: #5C4000; }
   .tips-title { font-weight: 600; margin-bottom: 4px; }
-  .reset-btn {
-    width: 100%; padding: 13px; background: transparent;
-    color: var(--green); border: 1.5px solid var(--green-light);
-    border-radius: var(--radius); font-size: 15px; font-weight: 600; cursor: pointer; margin-bottom: 20px;
-  }
+  .btn-offer { width: 100%; padding: 16px; background: linear-gradient(135deg, #4FAF4E 0%, #3A7D3A 100%); color: white; border: none; border-radius: var(--radius); font-size: 16px; font-weight: 700; cursor: pointer; margin-bottom: 10px; box-shadow: 0 4px 16px rgba(58,125,58,0.35); display: flex; align-items: center; justify-content: center; gap: 8px; }
+  .btn-offer:active { opacity: 0.9; }
+  .btn-offer.sent { background: #78909C; box-shadow: none; pointer-events: none; }
+  .btn-offer-inner { text-align: left; }
+  .btn-offer-sub { font-size: 12px; opacity: 0.85; font-weight: 400; margin-top: 1px; }
+  .reset-btn { width: 100%; padding: 13px; background: transparent; color: var(--green); border: 1.5px solid var(--green-light); border-radius: var(--radius); font-size: 15px; font-weight: 600; cursor: pointer; margin-bottom: 20px; }
   .footer { text-align: center; padding: 8px 16px 24px; font-size: 12px; color: var(--gray); }
 </style>
 </head>
@@ -182,13 +142,37 @@
     </div>
     <div class="breakdown" id="breakdown"></div>
     <div class="tips" id="tips-block"></div>
+    <button class="btn-offer" id="btn-offer" onclick="requestOffer()">
+      <span style="font-size:22px">📋</span>
+      <div class="btn-offer-inner">
+        <div>Отримати комерційну пропозицію</div>
+        <div class="btn-offer-sub">Менеджер зв'яжеться з вами</div>
+      </div>
+    </button>
     <button class="reset-btn" onclick="resetCalc()">← Розрахувати ще раз</button>
   </div>
 </div>
 <div class="footer">mycond.ua · кліматична техніка</div>
 <script>
-  const tg = window.Telegram?.WebApp;
+  var API_URL = 'http://91.98.76.51:3001/api/report';
+  var tg = window.Telegram && Telegram.WebApp ? Telegram.WebApp : null;
   if (tg) { tg.ready(); tg.expand(); }
+
+  function getTgUser() {
+    if (!tg || !tg.initDataUnsafe || !tg.initDataUnsafe.user) return { id: null, name: 'Анонім', username: null };
+    var u = tg.initDataUnsafe.user;
+    return { id: u.id, name: [u.first_name, u.last_name].filter(Boolean).join(' '), username: u.username || null };
+  }
+
+  function sendReport(data) {
+    try {
+      fetch(API_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+      }).catch(function(){});
+    } catch(e) {}
+  }
 
   document.getElementById('height').addEventListener('input', function() {
     document.getElementById('height-val').textContent = parseFloat(this.value).toFixed(1);
@@ -201,47 +185,40 @@
   });
 
   function selectSeg(btn, groupId) {
-    document.querySelectorAll('#' + groupId + ' .seg-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('#' + groupId + ' .seg-btn').forEach(function(b) { b.classList.remove('active'); });
     btn.classList.add('active');
   }
   function getSelected(groupId) {
-    const a = document.querySelector('#' + groupId + ' .seg-btn.active');
+    var a = document.querySelector('#' + groupId + ' .seg-btn.active');
     return a ? a.dataset.val : null;
   }
 
-  let lastCalc = null;
-
-  if (tg && tg.MainButton) {
-    tg.MainButton.setText('💾 Зберегти розрахунок');
-    tg.MainButton.onClick(function() {
-      if (lastCalc) tg.sendData(JSON.stringify(lastCalc));
-    });
-  }
+  var lastCalc = null;
 
   function calculate() {
-    const area = parseFloat(document.getElementById('area').value);
+    var area = parseFloat(document.getElementById('area').value);
     if (!area || area < 5) { alert('Введіть площу приміщення'); return; }
-    const height = parseFloat(document.getElementById('height').value);
-    const windows = parseInt(document.getElementById('windows').value);
-    const people = parseInt(document.getElementById('people').value);
-    const orientation = getSelected('orientation-group');
-    const roomType = getSelected('type-group');
-    const techLevel = getSelected('tech-group');
+    var height = parseFloat(document.getElementById('height').value);
+    var windows = parseInt(document.getElementById('windows').value);
+    var people = parseInt(document.getElementById('people').value);
+    var orientation = getSelected('orientation-group');
+    var roomType = getSelected('type-group');
+    var techLevel = getSelected('tech-group');
 
-    const base = area * 40;
-    const heightAdj = base * ((height - 2.7) / 2.7);
-    const winW = { N: 60, E: 100, S: 150 };
-    const windowLoad = windows * (winW[orientation] || 100);
-    const typeW = { bedroom: 0, living: 100, office: 200, kitchen: 500 };
-    const typeLoad = typeW[roomType] || 0;
-    const peopleLoad = Math.max(0, people - 2) * 120;
-    const techW = { low: 0, medium: 200, high: 500 };
-    const techLoad = techW[techLevel] || 0;
-    const total = base + heightAdj + windowLoad + typeLoad + peopleLoad + techLoad;
-    const kw = total / 1000;
-    const btu = Math.round(total * 3.412);
+    var base = area * 40;
+    var heightAdj = base * ((height - 2.7) / 2.7);
+    var winW = { N: 60, E: 100, S: 150 };
+    var windowLoad = windows * (winW[orientation] || 100);
+    var typeW = { bedroom: 0, living: 100, office: 200, kitchen: 500 };
+    var typeLoad = typeW[roomType] || 0;
+    var peopleLoad = Math.max(0, people - 2) * 120;
+    var techW = { low: 0, medium: 200, high: 500 };
+    var techLoad = techW[techLevel] || 0;
+    var total = base + heightAdj + windowLoad + typeLoad + peopleLoad + techLoad;
+    var kw = total / 1000;
+    var btu = Math.round(total * 3.412);
 
-    let model, note;
+    var model, note;
     if (kw <= 2.5) { model = 'MyCool 07 (2.0 кВт)'; note = 'ідеально для невеликих кімнат до 20 м²'; }
     else if (kw <= 3.3) { model = 'MyCool 09 (2.6 кВт)'; note = 'оптимально для 20–28 м²'; }
     else if (kw <= 4.5) { model = 'MyCool 12 (3.5 кВт)'; note = 'найпопулярніший — для 28–40 м²'; }
@@ -252,48 +229,62 @@
     document.getElementById('res-btu').textContent = btu.toLocaleString('uk-UA') + ' BTU/год';
     document.getElementById('res-model').textContent = model;
 
-    const rN = { bedroom:'Спальня', living:'Вітальня', office:'Офіс', kitchen:'Кухня' };
-    const oN = { N:'Північ', E:'Схід/Захід', S:'Південь' };
-    const tN = { low:'мало', medium:'середньо', high:'багато' };
+    var rN = { bedroom:'Спальня', living:'Вітальня', office:'Офіс', kitchen:'Кухня' };
+    var oN = { N:'Північ', E:'Схід/Захід', S:'Південь' };
+    var tN = { low:'мало', medium:'середньо', high:'багато' };
 
-    let bd = `<div class="breakdown-title">📊 Розбивка навантаження</div>
-      <div class="breakdown-row"><span>Базове (${area} м²)</span><span class="val">${(base/1000).toFixed(2)} кВт</span></div>`;
+    var bd = '<div class="breakdown-title">📊 Розбивка навантаження</div>' +
+      '<div class="breakdown-row"><span>Базове (' + area + ' м²)</span><span class="val">' + (base/1000).toFixed(2) + ' кВт</span></div>';
     if (Math.abs(heightAdj) > 50)
-      bd += `<div class="breakdown-row"><span>Висота стелі ${height} м</span><span class="val">${heightAdj>=0?'+':''}${(heightAdj/1000).toFixed(2)} кВт</span></div>`;
+      bd += '<div class="breakdown-row"><span>Висота стелі ' + height + ' м</span><span class="val">' + (heightAdj>=0?'+':'') + (heightAdj/1000).toFixed(2) + ' кВт</span></div>';
     if (windowLoad > 0)
-      bd += `<div class="breakdown-row"><span>Вікна (${windows}шт, ${oN[orientation]})</span><span class="val">+${(windowLoad/1000).toFixed(2)} кВт</span></div>`;
+      bd += '<div class="breakdown-row"><span>Вікна (' + windows + 'шт, ' + oN[orientation] + ')</span><span class="val">+' + (windowLoad/1000).toFixed(2) + ' кВт</span></div>';
     if (typeLoad > 0)
-      bd += `<div class="breakdown-row"><span>${rN[roomType]}</span><span class="val">+${(typeLoad/1000).toFixed(2)} кВт</span></div>`;
+      bd += '<div class="breakdown-row"><span>' + rN[roomType] + '</span><span class="val">+' + (typeLoad/1000).toFixed(2) + ' кВт</span></div>';
     if (peopleLoad > 0)
-      bd += `<div class="breakdown-row"><span>Люди (${people} чол.)</span><span class="val">+${(peopleLoad/1000).toFixed(2)} кВт</span></div>`;
+      bd += '<div class="breakdown-row"><span>Люди (' + people + ' чол.)</span><span class="val">+' + (peopleLoad/1000).toFixed(2) + ' кВт</span></div>';
     if (techLoad > 0)
-      bd += `<div class="breakdown-row"><span>Техніка (${tN[techLevel]})</span><span class="val">+${(techLoad/1000).toFixed(2)} кВт</span></div>`;
-    bd += `<div class="breakdown-row" style="font-weight:700"><span>Разом</span><span class="val">${kw.toFixed(2)} кВт</span></div>`;
+      bd += '<div class="breakdown-row"><span>Техніка (' + tN[techLevel] + ')</span><span class="val">+' + (techLoad/1000).toFixed(2) + ' кВт</span></div>';
+    bd += '<div class="breakdown-row" style="font-weight:700"><span>Разом</span><span class="val">' + kw.toFixed(2) + ' кВт</span></div>';
     document.getElementById('breakdown').innerHTML = bd;
 
-    const tips = [note];
+    var tips = [note];
     if (height > 3.0) tips.push('висока стеля вимагає більше потужності');
     if (orientation === 'S') tips.push('південні вікна — рекомендуємо жалюзі або плівку');
     if (roomType === 'kitchen') tips.push('на кухні враховуйте нагрів від плити');
     document.getElementById('tips-block').innerHTML =
-      `<div class="tips-title">💡 Рекомендація</div>${tips.map(t=>'• '+t).join('<br>')}`;
+      '<div class="tips-title">💡 Рекомендація</div>' + tips.map(function(t){return '• '+t}).join('<br>');
 
-    lastCalc = { calc: 'ac', inputs: { area, height, windows, people, orientation, roomType, techLevel }, result: { kw: parseFloat(kw.toFixed(2)), btu, model } };
+    lastCalc = {
+      calc: 'ac',
+      inputs: { area: area, height: height, windows: windows, people: people, orientation: orientation, roomType: roomType, techLevel: techLevel },
+      result: { kw: parseFloat(kw.toFixed(2)), btu: btu, model: model }
+    };
+
+    sendReport({ type: 'calc', user: getTgUser(), calc: lastCalc.calc, inputs: lastCalc.inputs, result: lastCalc.result });
 
     document.getElementById('form-section').style.display = 'none';
     document.getElementById('result-section').className = 'result show';
+    document.getElementById('btn-offer').classList.remove('sent');
+    document.getElementById('btn-offer').innerHTML = '<span style="font-size:22px">📋</span><div class="btn-offer-inner"><div>Отримати комерційну пропозицію</div><div class="btn-offer-sub">Менеджер зв\'яжеться з вами</div></div>';
     window.scrollTo(0, 0);
-    if (tg) tg.HapticFeedback?.notificationOccurred('success');
-    if (tg && tg.MainButton) tg.MainButton.show();
+    if (tg && tg.HapticFeedback) tg.HapticFeedback.notificationOccurred('success');
+  }
+
+  function requestOffer() {
+    if (!lastCalc) return;
+    sendReport({ type: 'offer', user: getTgUser(), calc: lastCalc.calc, inputs: lastCalc.inputs, result: lastCalc.result });
+    var btn = document.getElementById('btn-offer');
+    btn.classList.add('sent');
+    btn.innerHTML = '<span style="font-size:22px">✅</span><div class="btn-offer-inner"><div>Запит надіслано!</div><div class="btn-offer-sub">Менеджер зв\'яжеться з вами найближчим часом</div></div>';
+    if (tg && tg.HapticFeedback) tg.HapticFeedback.notificationOccurred('success');
   }
 
   function resetCalc() {
     document.getElementById('form-section').style.display = 'block';
     document.getElementById('result-section').className = 'result';
     window.scrollTo(0, 0);
-    if (tg && tg.MainButton) tg.MainButton.hide();
   }
 </script>
 </body>
 </html>
-
