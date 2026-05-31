@@ -149,6 +149,11 @@
 </div>
 <script>
 if(window.Telegram&&Telegram.WebApp){Telegram.WebApp.ready();Telegram.WebApp.expand();}
+var lastCalc=null;
+if(window.Telegram&&Telegram.WebApp&&Telegram.WebApp.MainButton){
+  Telegram.WebApp.MainButton.setText('💾 Зберегти розрахунок');
+  Telegram.WebApp.MainButton.onClick(function(){if(lastCalc)Telegram.WebApp.sendData(JSON.stringify(lastCalc));});
+}
 var NORMS={living:{min:20,rec:25,max:30,ach:[0.5,0.75,1.0]},bedroom:{min:30,rec:35,max:40,ach:[0.5,0.7,1.0]},office:{min:40,rec:50,max:60,ach:[2,3,4]},conference:{min:40,rec:55,max:70,ach:[3,5,7]},kitchen:{min:60,rec:75,max:90,ach:[5,7,10],fixed:true},bathroom:{min:25,rec:35,max:50,ach:[5,7,10],fixed:true},gym:{min:80,rec:90,max:100,ach:[4,6,8]},school:{min:16,rec:20,max:30,ach:[2,3,4]},restaurant:{min:30,rec:50,max:70,ach:[4,6,8]}};
 var TIPS={living:{t:'Порада для вітальні',b:'Рекомендується ПВУ з рекуперацією. ККД рекуператора 70–85% знижує витрати на опалення взимку.'},bedroom:{t:'Спальня: якість сну',b:'Уночі людина виділяє CO₂ і вологу. Норма CO₂ — до 1000 ppm. ПВУ або бризер забезпечать якісний сон.'},office:{t:'Офіс: продуктивність',b:'При CO₂ > 1000 ppm продуктивність знижується до 50%. Вентиляція — інвестиція в ефективність команди.'},conference:{t:'Переговорна: пік навантаження',b:'Розраховуйте на повну заповненість. Система має забезпечувати пікову витрату.'},kitchen:{t:'Кухня: витяжка + приплив',b:'Газова плита → мінімум 90 м³/год. Потрібна компенсація припливом з сусідніх кімнат.'},bathroom:{t:'Санвузол: протитиск',b:'Завжди в зоні витяжки (негативний тиск). Вентилятор з датчиком вологості — оптимально.'},gym:{t:'Спортзал: висока активність',b:'При навантаженні виробляється вдвічі більше CO₂. Обов\'язкова примусова вентиляція з великою кратністю.'},school:{t:'Клас: норми для дітей',b:'ДБН: мінімум 16 м³/год на учня. Бризери або ПВУ вирішують проблему CO₂ у класах.'},restaurant:{t:'Ресторан: баланс запахів',b:'Кухня у витяжці, зал у подачі. Дисбаланс → запахи у залі. Потрібне балансування.'}};
 var PVUS=[{f:100,n:'WindMe 100'},{f:200,n:'WindMe 200'},{f:350,n:'BreezMe 350'},{f:550,n:'BreezMe 550'},{f:800,n:'BreezMe 800'},{f:1200,n:'BreezMe 1200'}];
@@ -178,7 +183,10 @@ function calculate(){
   var tip=TIPS[rt];
   if(tip){document.getElementById('tip-title').textContent=tip.t;document.getElementById('tip-text').textContent=tip.b;document.getElementById('tip').classList.add('show');}
   if(window.Telegram&&Telegram.WebApp&&Telegram.WebApp.HapticFeedback)Telegram.WebApp.HapticFeedback.impactOccurred('medium');
+  lastCalc={calc:'vent',inputs:{area:area,height:h,people:people,roomType:rt,norm:selNorm},result:{flow:flow,ach:parseFloat((flow/vol).toFixed(1)),diam:'Ø'+getDiam(flow)+' мм',pvu:getPVU(flow)}};
+  if(window.Telegram&&Telegram.WebApp&&Telegram.WebApp.MainButton)Telegram.WebApp.MainButton.show();
 }
 </script>
 </body>
 </html>
+
